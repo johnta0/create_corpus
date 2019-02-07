@@ -18,14 +18,16 @@ def main():
     df = pd.read_csv(args[1], skiprows=[0], sep=',')
 
     f = open(args[2], 'w')
-    for index, row in df.iterrows():
+    for _, row in df.iterrows():
         review_text = row[3]
+        if type(review_text) is not str:
+            continue
         review_text.replace('。', '。\n')
         f.write(review_text)
     f.close()
 
     # 分かち書き
-    tagger = MeCab.Tagger(-OWakati)
+    tagger = MeCab.Tagger('-OWakati')
 
     text = open(args[2], 'r')
     wakati = tagger.parse(text)
