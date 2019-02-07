@@ -6,13 +6,6 @@ import pandas as pd
 
 # corpus would look like... ["the", "restaurant", "is", "very", "good", "."]
 
-
-
-# returns text devided by \n
-def devide_to_lines(review_text):
-
-    return
-
 # returns corpus ["", "", ..., ""]
 # 分かち書き
 def devide_with_spaces():
@@ -21,17 +14,26 @@ def devide_with_spaces():
 def main():
     # first arg => input filename, second arg => output filename
     args = sys.argv
-    # args[0] => 'split_review.py'
-    input_filename = args[1]
-    output_filename = args[2]
     # ファイル読み込み with panda
-    reader = pd.read_csv(input_filename, skiprows=[0], chunksize=50)
+    df = pd.read_csv(args[1], skiprows=[0], sep=',')
 
-    for df in reader:
-        for index, row in df.iterrows():
-            print(row[3])
-            print('--------')
-            # reviews = extract_reviews(df)
+    f = open(args[2], 'w')
+    for index, row in df.iterrows():
+        review_text = row[3]
+        review_text.replace('。', '。\n')
+        f.write(review_text)
+    f.close()
+
+    # 分かち書き
+    tagger = MeCab.Tagger(-OWakati)
+
+    text = open(args[2], 'r')
+    wakati = tagger.parse(text)
+
+    f = open(args[3], 'w')
+    f.write(wakati)
+    f.close()
+
 
 if __name__ == '__main__':
     main()
